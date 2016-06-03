@@ -1,0 +1,25 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        "health"
+    ],
+    "companyName": "Nick Engmann",
+    "enableMultiJS": true,
+    "longName": "Anti-Nap",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "Anti-Nap",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "57d92136-3e85-4a7d-90ba-941d58bdd02a",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
