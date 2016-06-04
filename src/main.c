@@ -3,15 +3,26 @@
 static Window *s_window;
 static TextLayer *s_text_layer;
 static char time_format[] = "00:00.";
+static const uint32_t const segments[] = { 
+  2000, 1000, 4000, 1000, 4000
+};
+VibePattern pat = {
+.durations = segments,
+.num_segments = ARRAY_LENGTH(segments),
+};
+bool glb_alarm;
 
 static void select_click_handler( ClickRecognizerRef recognizer, void *context){
   text_layer_set_text(s_text_layer, "Select");
+  vibes_double_pulse();
 }
 static void up_click_handler( ClickRecognizerRef recognizer, void *context){
   text_layer_set_text(s_text_layer, "Up");
+  vibes_long_pulse();
 }
 static void down_click_handler( ClickRecognizerRef recognizer, void *context){
   text_layer_set_text(s_text_layer, "Down");
+  vibes_enqueue_custom_pattern(pat);
 }
 static void click_config_provider(void *context){
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
@@ -28,6 +39,17 @@ void tick_handler(struct tm *t, TimeUnits units_changed){
     strftime(time_format, sizeof(time_format), "%H:%M", t);
   }
   text_layer_set_text(s_text_layer, time_format);
+  int hours = t->tm_hour;
+  int minutes = t->tm_min;
+  /*//This is the code to make the alarm go off. It has to fall into the following use circumstance
+    if(glb_alarm = true){
+        if(hours >= glb_hours_1 && hours <= glb_hours_2){
+            if(minutes >= glb_minutes_1 || minutes >=glb_minutes_2){
+            
+            }
+        }
+    }
+  */
 }
 
 static void init(void) {

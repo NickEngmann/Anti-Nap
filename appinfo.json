@@ -8,7 +8,15 @@
     "longName": "Anti-Nap",
     "projectType": "native",
     "resources": {
-        "media": []
+        "media": [
+            {
+                "file": "images/App-Icon",
+                "menuIcon": true,
+                "name": "App_Icon",
+                "targetPlatforms": null,
+                "type": "png"
+            }
+        ]
     },
     "sdkVersion": "3",
     "shortName": "Anti-Nap",
