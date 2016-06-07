@@ -7,8 +7,8 @@ static TextLayer *top_text_layer;
 static TextLayer *s_text_home_layer_1, *s_text_home_layer_2,*s_text_home_layer_3,*s_text_home_layer_1_1,*s_text_home_layer_2_2,*s_text_home_layer_3_3;
 static int home_selection = 0;
 static char time_format[] = "00:00.";
-static const uint32_t const segments[] = { 
-  2000, 1000, 4000, 1000, 4000
+static uint32_t segments[] = { 
+  2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000,
 };
 VibePattern pat = {
 .durations = segments,
@@ -52,7 +52,8 @@ VibePattern pat = {
     } 
   }
   static void on_off_select_click_handler( ClickRecognizerRef recognizer, void *context){
-      window_stack_push(home_window, true);
+    window_stack_pop(true);  
+    window_stack_push(home_window, true);
   }
   static void on_off_up_click_handler( ClickRecognizerRef recognizer, void *context){ 
     if(glb_alarm == true){
@@ -108,7 +109,7 @@ VibePattern pat = {
     text_layer_destroy(on_off_layer);
     text_layer_destroy(on_off_on);
     text_layer_destroy(on_off_off);
-  };
+};
 
   //Time Set Window Specific Variables
   static Window *time_window;
@@ -124,8 +125,36 @@ VibePattern pat = {
   char pm_minute_buf[] = "000";
   int select_time;
   //Time Input Functions
-   void refresh_time_window(){
+  void time_selection_layer_1_proc(Layer *layer, GContext *ctx){
+    graphics_draw_rect(ctx, GRect(25,84,33,30));
+  }
+  void time_selection_layer_2_proc(Layer *layer, GContext *ctx){
+    graphics_draw_rect(ctx, GRect(56,84,34,30));
+  }
+  void time_selection_layer_3_proc(Layer *layer, GContext *ctx){
+    graphics_draw_rect(ctx, GRect(25,124,33,30));
+  }
+  void time_selection_layer_4_proc(Layer *layer, GContext *ctx){
+    graphics_draw_rect(ctx, GRect(56,124,34,30));
+  }
+  void refresh_time_window(){
     //am refresh
+    if(select_time==0){
+        layer_set_update_proc(selection_time_layer, time_selection_layer_1_proc);
+        layer_add_child(window_get_root_layer(time_window), selection_time_layer);  
+    }
+    if(select_time==1){
+        layer_set_update_proc(selection_time_layer, time_selection_layer_2_proc);
+        layer_add_child(window_get_root_layer(time_window), selection_time_layer);  
+    }
+    if(select_time==2){
+        layer_set_update_proc(selection_time_layer, time_selection_layer_3_proc);
+        layer_add_child(window_get_root_layer(time_window), selection_time_layer);  
+    }
+    if(select_time==3){
+        layer_set_update_proc(selection_time_layer, time_selection_layer_4_proc);
+        layer_add_child(window_get_root_layer(time_window), selection_time_layer);  
+    }
     snprintf(am_hour_buf, sizeof(am_hour_buf), "%d", glb_hours_1);
     text_layer_set_text(time_am_hour_input, am_hour_buf);
       if(glb_minutes_1 < 10){
@@ -151,6 +180,7 @@ VibePattern pat = {
       if(select_time == 4){
         select_time = 0;
       }
+    refresh_time_window();
     }
   static void time_input_up_click_handler( ClickRecognizerRef recognizer, void *context){ 
     if(select_time == 0){
@@ -207,9 +237,10 @@ VibePattern pat = {
     refresh_time_window();
   }
   static void time_input_click_config_provider(void *context){
+    uint16_t repeat_interval_ms = 100; 
     window_single_click_subscribe(BUTTON_ID_SELECT, time_input_select_click_handler);
-    window_single_click_subscribe(BUTTON_ID_UP, time_input_up_click_handler);
-    window_single_click_subscribe(BUTTON_ID_DOWN, time_input_down_click_handler);
+    window_single_repeating_click_subscribe(BUTTON_ID_UP,repeat_interval_ms, time_input_up_click_handler);
+    window_single_repeating_click_subscribe(BUTTON_ID_DOWN,repeat_interval_ms, time_input_down_click_handler);
   }
   void time_window_load(Window *w){
     //time input variables
@@ -247,7 +278,6 @@ VibePattern pat = {
     time_pm_layer = text_layer_create(GRect(40,120,144,30));
     text_layer_set_text(time_layer, "Currently set to run from:");
     text_layer_set_text(time_am_layer, "AM");
-
     text_layer_set_text(time_pm_layer, "PM");
     text_layer_set_font(time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
     text_layer_set_font(time_am_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28));
@@ -269,7 +299,7 @@ VibePattern pat = {
     layer_add_child(window_get_root_layer(time_window), text_layer_get_layer(time_pm_hour_input));
     layer_add_child(window_get_root_layer(time_window), text_layer_get_layer(time_pm_minute_input));
     window_set_click_config_provider(time_window, time_input_click_config_provider);  
-
+    refresh_time_window();
   }
   void time_window_unload(Window *w){
     text_layer_destroy(time_layer);
@@ -326,12 +356,15 @@ VibePattern pat = {
   }
   static void alert_select_click_handler( ClickRecognizerRef recognizer, void *context){
     if(glb_alert_style == 0){
+      window_stack_pop(true); 
       window_stack_push(home_window, true);
     } 
     if(glb_alert_style == 1){
+      window_stack_pop(true);
       window_stack_push(home_window, true);
     }
     if(glb_alert_style == 2){
+      window_stack_pop(true);
       window_stack_push(home_window, true);
     }
   }
@@ -350,9 +383,10 @@ VibePattern pat = {
     refresh_alert_layer();
   }
   static void alert_click_config_provider(void *context){
+    uint16_t repeat_interval_ms = 500;  // Fire every 200 ms while held down  
     window_single_click_subscribe(BUTTON_ID_SELECT, alert_select_click_handler);
-    window_single_click_subscribe(BUTTON_ID_UP, alert_up_click_handler);
-    window_single_click_subscribe(BUTTON_ID_DOWN, alert_down_click_handler);
+    window_single_repeating_click_subscribe(BUTTON_ID_UP, repeat_interval_ms, alert_up_click_handler);
+    window_single_repeating_click_subscribe(BUTTON_ID_DOWN, repeat_interval_ms, alert_down_click_handler);
   }
   void alert_style_window_load(Window *w){
     window_set_click_config_provider(alert_style_window, alert_click_config_provider);
@@ -427,8 +461,7 @@ void refresh_home_layer(){
   }
 }
 void home_window_load(Window *home_window){
-  layer_set_update_proc(home_background, home_layer_proc);
-  //tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);	
+  layer_set_update_proc(home_background, home_layer_proc);	
   // Create text layer
 	s_text_home_layer_1 = text_layer_create(GRect(0,10,138,20));
 	s_text_home_layer_1_1 = text_layer_create(GRect(0,30,138,20));
@@ -530,28 +563,59 @@ void tick_handler(struct tm *t, TimeUnits units_changed){
   }
   text_layer_set_text(top_text_layer, time_format);
   */
+  // Get an activities mask
+  HealthActivityMask activities = health_service_peek_current_activities();
   int hours = t->tm_hour;
   int minutes = t->tm_min;
-  //This is the code to make the alarm go off. It has to fall into the following use circumstance
-    if(glb_alarm == true){
-        if(hours >= glb_hours_1 && hours <= glb_hours_2){
-            if(minutes >= glb_minutes_1 || minutes >=glb_minutes_2){
-              if(glb_alert_style == 0){
-              
+  // Determine which bits are set, and hence which activity is active
+  if(activities & HealthActivitySleep) {
+      //This is the code to make the alarm go off. It has to fall into the following use circumstance
+      if(glb_alarm == true){
+          if(hours >= glb_hours_1 && hours <= glb_hours_2){
+              if(minutes >= glb_minutes_1 || minutes >=glb_minutes_2){
+                if(glb_alert_style == 0){
+                  vibes_enqueue_custom_pattern(pat);
+                }
+                if(glb_alert_style == 1){
+                  //TODO, FIGURE OUT HOW TO DO PHONE ALERT
+                }
+                if(glb_alert_style == 2){
+                  //TODO, FIGURE OUT HOW TO DO PHONE ALERT
+                  vibes_enqueue_custom_pattern(pat);
+                }
               }
-              if(glb_alert_style == 1){
-              
+          }
+      }
+      APP_LOG(APP_LOG_LEVEL_INFO, "The user is sleeping.");
+  } 
+  else if(activities & HealthActivityRestfulSleep) {
+      //This is the code to make the alarm go off. It has to fall into the following use circumstance
+      if(glb_alarm == true){
+          if(hours >= glb_hours_1 && hours <= glb_hours_2){
+              if(minutes >= glb_minutes_1 || minutes >=glb_minutes_2){
+                if(glb_alert_style == 0){
+                  vibes_enqueue_custom_pattern(pat);
+                }
+                if(glb_alert_style == 1){
+                  //TODO, FIGURE OUT HOW TO DO PHONE ALERT
+                }
+                if(glb_alert_style == 2){
+                  //TODO, FIGURE OUT HOW TO DO PHONE ALERT
+                  vibes_enqueue_custom_pattern(pat);
+                }
               }
-              if(glb_alert_style == 2){
-                
-              }
-            }
-        }
-    }
+          }
+      }
+      APP_LOG(APP_LOG_LEVEL_INFO, "The user is sleeping peacefully.");
+  } 
+  else {
+    APP_LOG(APP_LOG_LEVEL_INFO, "The user is not currently sleeping.");
+  }
 }
 static void init(void) {
 	// Create a window and get information about the window
   home_window = window_create();
+  tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   //layers creation
   home_background = layer_create(GRect(0,0,144,168));
   selection_layer = layer_create(GRect(0,0,144,168));
@@ -587,7 +651,6 @@ static void init(void) {
     .unload = alert_style_window_unload,
   });
 }
-
 static void deinit(void) {
 	// Destroy the window
 	window_destroy(home_window);
