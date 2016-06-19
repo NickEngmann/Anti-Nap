@@ -25,6 +25,7 @@ int select_time;
     .unload = time_window_unload,
     });
   }
+
   void time_selection_layer_1_proc(Layer *layer, GContext *ctx){
     graphics_draw_rect(ctx, GRect(25,84,33,30));
   }
@@ -75,6 +76,7 @@ int select_time;
       }
     text_layer_set_text(time_pm_minute_input, pm_minute_buf);
    }
+
   void time_input_select_click_handler( ClickRecognizerRef recognizer, void *context){
     select_time++;
       if(select_time == 4){
@@ -82,6 +84,7 @@ int select_time;
       }
     refresh_time_window();
     }
+
   void time_input_up_click_handler( ClickRecognizerRef recognizer, void *context){ 
     if(select_time == 0){
       glb_hours_1++;
@@ -109,6 +112,7 @@ int select_time;
       }
     refresh_time_window();
     }
+
   void time_input_down_click_handler( ClickRecognizerRef recognizer, void *context){
     if(select_time == 0){
       glb_hours_1--;
@@ -136,6 +140,7 @@ int select_time;
     }
     refresh_time_window();
   }
+
   void time_input_click_config_provider(void *context){
     uint16_t repeat_interval_ms = 100; 
     window_single_click_subscribe(BUTTON_ID_SELECT, time_input_select_click_handler);
@@ -201,7 +206,14 @@ int select_time;
     window_set_click_config_provider(time_window, time_input_click_config_provider);  
     refresh_time_window();
   }
+
   void time_window_unload(Window *w){
+    //save hours and minutes for later
+    persist_write_int(1, glb_hours_1);
+    persist_write_int(2, glb_hours_2);
+    persist_write_int(3, glb_minutes_1);
+    persist_write_int(4, glb_minutes_2);
+    //destroy text layers
     text_layer_destroy(time_layer);
     text_layer_destroy(time_pm_layer);
     text_layer_destroy(time_am_layer);

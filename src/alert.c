@@ -118,6 +118,7 @@ void alert_style_window_load(Window *w){
   refresh_alert_layer();
 }
 void alert_style_window_unload(Window *w){
+  persist_write_int(5, glb_alert_style);
   text_layer_destroy(alert_style_vibrate_layer);
   text_layer_destroy(alert_style_phone_layer);
   text_layer_destroy(alert_style_both_layer);

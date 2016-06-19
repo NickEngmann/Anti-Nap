@@ -138,45 +138,33 @@ static void click_config_provider(void *context){
   //window_single_click_subscribe(BUTTON_ID_UP, on-off_up_click_handler);
   //window_single_click_subscribe(BUTTON_ID_DOWN, on-off_down_click_handler);
 }
+
+
 void tick_handler(struct tm *t, TimeUnits units_changed){
-  if(glb_alarm == 1){
-    int time_start = (glb_hours_1*1000)+glb_minutes_1;
-    int time_end = (glb_hours_2*1000)+glb_minutes_2;
-    AppWorkerMessage message_fore = {
-      .data0 = glb_alarm,
-      .data1 = time_start,
-      .data2 = time_end,
-    };
-  app_worker_send_message(1, &message_fore);
+  int checker = persist_read_int(6);
+  if(checker == 321){
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "SanityCheck: %d", checker); //checks to see if app worker is on
+    glb_alarm = 0;
+    vibes_enqueue_custom_pattern(pat);
+    vibes_enqueue_custom_pattern(pat);
+    persist_delete(6);
+    checker = 0;
   }
 }
 
-void worker_message_handler(uint16_t key, AppWorkerMessage *data){
-  int checker = data->data2;
-  //glb_alarm = checker;
-  //glb_hours_1 = (data->data1)/1000;
-  //glb_hours_2 = (data->data2)/1000;
-  //glb_minutes_1 = (data->data1)%1000;
-  //glb_minutes_2 = (data->data2)%1000;
-  if (checker == 1){
-    //transfer the alarm variables back from the backgroun
-    //activate alarm
-    //create a BitMap Screen?
-      vibes_enqueue_custom_pattern(pat); 
-  }
-}
+
 static void init(void) {
 	// Create a window and get information about the window
   home_window = window_create();
-  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
-  glb_hours_1 = 7;
-  glb_hours_2 = 11;
-  glb_minutes_2 = 59;
+  glb_alarm = persist_read_int(0);
+  glb_hours_1 = persist_read_int(1);
+  glb_hours_2 = persist_read_int(2);
+  glb_minutes_1 = persist_read_int(3);
+  glb_minutes_2 = persist_read_int(4);
+  glb_alert_style = persist_read_int(5);
   //all things worker
-  AppWorkerResult result;
-  result = app_worker_launch();
-  APP_LOG(APP_LOG_LEVEL_INFO, "Result: %d", result);
-  app_worker_message_subscribe(worker_message_handler);
+  AppWorkerResult result = app_worker_launch();
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Result: %d", result); //checks to see if app worker is on
 
   //layers creation
   window_on_off_layer_create();//Create layers for on_off
@@ -197,17 +185,20 @@ static void init(void) {
   window_time_create();
   //initialize alert style window
   window_alert_create();
-  
+  //check if AppWorker is Running Currently
+  bool running = app_worker_is_running();
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Is the App Worker Running: %d", running);
+  tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
 }
 
 static void deinit(void) {
-	// Destroy the window
+	//Destroy the window
 	window_destroy(home_window);
   //destroy tick handler
-  tick_timer_service_unsubscribe();
+  //tick_timer_service_unsubscribe();
   //destroy the BackGround Worker
   //if(glb_alarm == 0){
-   // app_worker_kill();
+  // app_worker_kill();
   //}
 }
 

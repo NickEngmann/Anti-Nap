@@ -12,6 +12,7 @@ Layer *selection_on_off_layer;
       on_off_background = layer_create(GRect(0,0,144,168));
    }
   void window_push_on_off(){
+        
         window_stack_push(on_off_window, true);
   }
    void window_on_off_create(){
@@ -103,7 +104,9 @@ Layer *selection_on_off_layer;
     refresh_on_off();
     window_set_click_config_provider(on_off_window, on_off_click_config_provider); 
   };
+
   void on_off_window_unload(Window *w){
+    persist_write_int(0, glb_alarm);
     // Destroy the text layers
     text_layer_destroy(on_off_layer);
     text_layer_destroy(on_off_on);
