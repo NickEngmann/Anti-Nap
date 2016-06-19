@@ -12,7 +12,6 @@ Layer *selection_on_off_layer;
       on_off_background = layer_create(GRect(0,0,144,168));
    }
   void window_push_on_off(){
-        
         window_stack_push(on_off_window, true);
   }
    void window_on_off_create(){

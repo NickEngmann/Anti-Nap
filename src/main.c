@@ -3,6 +3,8 @@
 #include "on_off.h"
 #include "time_check.h"
 #include "alert.h"
+#include "alarm_screen.h"
+
 
 //Background and Selection for Home Layer
 void home_layer_proc(Layer *home_background, GContext *ctx){
@@ -143,12 +145,9 @@ static void click_config_provider(void *context){
 void tick_handler(struct tm *t, TimeUnits units_changed){
   int checker = persist_read_int(6);
   if(checker == 321){
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "SanityCheck: %d", checker); //checks to see if app worker is on
-    glb_alarm = 0;
-    vibes_enqueue_custom_pattern(pat);
-    vibes_enqueue_custom_pattern(pat);
     persist_delete(6);
     checker = 0;
+    window_push_alarm_screen();
   }
 }
 
@@ -170,6 +169,7 @@ static void init(void) {
   window_on_off_layer_create();//Create layers for on_off
   window_time_layer_create(); //Create layers for time
   window_alert_layer_create(); //create layer for alerts
+  window_alarm_screen_layer_create(); //create layer for alarm screen
   home_background = layer_create(GRect(0,0,144,168));
   selection_layer = layer_create(GRect(0,0,144,168));
   window_set_click_config_provider(home_window, click_config_provider); //Click Fig Provider
@@ -185,6 +185,8 @@ static void init(void) {
   window_time_create();
   //initialize alert style window
   window_alert_create();
+  //initialize alarm screen window
+  window_alarm_screen_create();
   //check if AppWorker is Running Currently
   bool running = app_worker_is_running();
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Is the App Worker Running: %d", running);

@@ -8,10 +8,3 @@ TextLayer *s_text_home_layer_1, *s_text_home_layer_2,*s_text_home_layer_3,*s_tex
 TextLayer *worker_output_check;
 int home_selection = 0;
 char time_format[] = "00:00.";
-static uint32_t segments[] = { 
-  2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000, 2000, 1000, 4000, 1000, 4000, 1000,
-};
-VibePattern pat = {
-.durations = segments,
-.num_segments = ARRAY_LENGTH(segments),
-};

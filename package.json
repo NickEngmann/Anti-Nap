@@ -7,12 +7,32 @@
         "capabilities": [
             "health"
         ],
-        "displayName": "Anti-Nap: The Nap Killing Application",
+        "displayName": "Anti-Nap",
         "enableMultiJS": true,
         "messageKeys": {},
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/alarm2.png",
+                    "name": "321",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "chalk"
+                    ],
+                    "type": "png"
+                },
+                {
+                    "file": "images/alarm.png",
+                    "name": "123",
+                    "targetPlatforms": [
+                        "aplite",
+                        "basalt",
+                        "chalk"
+                    ],
+                    "type": "bitmap"
+                },
                 {
                     "file": "images/App-Icon",
                     "menuIcon": true,
