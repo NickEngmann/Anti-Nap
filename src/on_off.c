@@ -14,7 +14,7 @@ Layer *selection_on_off_layer;
   void window_push_on_off(){
         window_stack_push(on_off_window, true);
   }
-   void window_on_off_create(){
+  void window_on_off_create(){
       //initialize on_off window
       on_off_window = window_create();
       window_set_window_handlers(on_off_window, (WindowHandlers){

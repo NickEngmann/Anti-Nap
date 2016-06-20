@@ -1,17 +1,13 @@
 #include <pebble_worker.h>
 
-int alarm, start_hour, end_hour, start_minute, end_minute, alarm_style; 
 
 void worker_message_handler(uint16_t key, AppWorkerMessage *message){
-  /*alarm = message->data0;
-  start_hour = (message->data1)/1000;
-  end_hour = (message->data2)/1000;
-  start_minute = (message->data1)%1000;
-  end_minute = (message->data2)%1000;*/
-  //save changes to long term Storage
+
 }
 
 void tick_handler_worker(struct tm *t, TimeUnits units){
+  //load in old variables
+  int alarm, start_hour, end_hour, start_minute, end_minute, alarm_style; 
   alarm = persist_read_int(0);
   start_hour = persist_read_int(1);
   end_hour = persist_read_int(2);
@@ -28,11 +24,6 @@ void tick_handler_worker(struct tm *t, TimeUnits units){
           //This is the code to make the alarm go off. It has to fall into the following use circumstance
               if((hours >= start_hour) && (hours <= end_hour)){
                   if((minutes >= start_minute) || (minutes >=end_minute)){
-                    AppWorkerMessage message_back = {
-                    .data0 = alarm,
-                    .data1 = (start_hour*1000)+start_minute,
-                    .data2 = (end_hour*1000)+end_minute,
-                    };
                   APP_LOG(APP_LOG_LEVEL_INFO, "The user is sleeping.");
                   persist_write_int(6, 321);  
                   worker_launch_app();
@@ -44,11 +35,6 @@ void tick_handler_worker(struct tm *t, TimeUnits units){
               if(hours >= start_hour){
                 if(hours <= end_hour){
                   if((minutes >= start_minute) || (minutes >=end_minute)){
-                    AppWorkerMessage message_back = {
-                      .data0 = alarm,
-                      .data1 = (start_hour*1000)+start_minute,
-                      .data2 = (end_hour*1000)+end_minute,
-                    };
                     APP_LOG(APP_LOG_LEVEL_INFO, "The user is sleeping peacefully.");
                     persist_write_int(6, 321);
                     worker_launch_app();

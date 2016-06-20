@@ -15,7 +15,7 @@ int select_time;
   void window_time_layer_create(){
       selection_time_layer = layer_create(GRect(0,0,144,168));
   }
-void window_push_time(){
+  void window_push_time(){
       window_stack_push(time_window, true);
   }
   void window_time_create(){
