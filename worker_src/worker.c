@@ -7,13 +7,15 @@ void worker_message_handler(uint16_t key, AppWorkerMessage *message){
 
 void tick_handler_worker(struct tm *t, TimeUnits units){
   //load in old variables
-  int alarm, start_hour, end_hour, start_minute, end_minute, alarm_style; 
+  int alarm, start_hour, end_hour, start_minute, end_minute; 
+  /*Add Alarm Style When Feature Becomes Necessary*/
+  //int alarm_stlye
   alarm = persist_read_int(0);
   start_hour = persist_read_int(1);
   end_hour = persist_read_int(2);
   start_minute = persist_read_int(3);
   end_minute = persist_read_int(4);
-  alarm_style = persist_read_int(5);
+  //alarm_style = persist_read_int(5);
   // Get an activities mask
   HealthActivityMask activities = health_service_peek_current_activities();
   int hours = t->tm_hour;

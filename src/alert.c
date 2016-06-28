@@ -96,13 +96,15 @@ void alert_click_config_provider(void *context){
 void alert_style_window_load(Window *w){
   window_set_click_config_provider(alert_style_window, alert_click_config_provider);
   layer_set_update_proc(alert_style_background, alert_layer_proc);
-
   alert_style_vibrate_layer = text_layer_create(GRect(0,20,138,20));
-  alert_style_phone_layer = text_layer_create(GRect(0,70,138,20));
+  alert_style_phone_layer = text_layer_create(GRect(0,60,138,40));
   alert_style_both_layer = text_layer_create(GRect(0,110,138,40));
   text_layer_set_text(alert_style_vibrate_layer, "Vibrate Watch");
-  text_layer_set_text(alert_style_phone_layer, "Phone Alert");
-  text_layer_set_text(alert_style_both_layer, "Alert Both Watch + Phone");
+/* Phone Alert and Alert Both Watch + Phone to come*/
+//   text_layer_set_text(alert_style_phone_layer, "Phone Alert");
+//   text_layer_set_text(alert_style_both_layer, "Alert Both Watch + Phone");
+  text_layer_set_text(alert_style_phone_layer, "Additional Features to Come");
+  text_layer_set_text(alert_style_both_layer, "Additional Features to Come");
   text_layer_set_font(alert_style_vibrate_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   text_layer_set_font(alert_style_phone_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
   text_layer_set_font(alert_style_both_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
