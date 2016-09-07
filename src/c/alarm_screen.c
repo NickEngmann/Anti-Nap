@@ -32,18 +32,20 @@ void window_alarm_screen_create(){
 
 void alarm_screen_window_load(Window *w){
     //draw new screen
-  layer_add_child(window_get_root_layer(alarm_screen_window), bitmap_layer_get_layer(bitmapLayer));
-  alarm_image = gbitmap_create_with_resource(321);
-  APP_LOG(APP_LOG_LEVEL_INFO, "image created %p", alarm_image);
-  bitmap_layer_set_bitmap(bitmapLayer, alarm_image);
+  int alert_style = persist_read_int(5);
+//   layer_add_child(window_get_root_layer(alarm_screen_window), bitmap_layer_get_layer(bitmapLayer));
+//   alarm_image = gbitmap_create_with_resource(321);
+//   APP_LOG(APP_LOG_LEVEL_INFO, "image created %p", alarm_image);
+//   bitmap_layer_set_bitmap(bitmapLayer, alarm_image);
   
   alarm_screen_layer = text_layer_create(GRect(0,10,144,168));
   text_layer_set_text(alarm_screen_layer, "WAKE UP BUTTERCUP! ANTI-NAP IS ON!");
   text_layer_set_font(alarm_screen_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
   text_layer_set_text_alignment(alarm_screen_layer, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(alarm_screen_window), text_layer_get_layer(alarm_screen_layer));
-  vibes_enqueue_custom_pattern(pat);
-  vibes_enqueue_custom_pattern(pat);
+  if(alert_style >= 0){
+    vibes_enqueue_custom_pattern(pat);
+  }
 }
 
 void alarm_screen_window_unload(Window *w){

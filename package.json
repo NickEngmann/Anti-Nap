@@ -9,7 +9,7 @@
         ],
         "displayName": "Anti-Nap",
         "enableMultiJS": true,
-        "messageKeys": {},
+        "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [
